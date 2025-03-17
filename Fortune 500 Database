@@ -99,3 +99,13 @@ WHEN revenue BETWEEN 100 AND 250 THEN 'Medium Revenue'
 ELSE 'Low Revenue'
 END AS revenue_category
 FROM fortune_companies;
+
+--Classify companies as "Employee Friendly" based on benefits (healthcare, PTO, and maternity leave.
+SELECT company_name, healthcare_benefits, paid_time_off_days, maternity_leave_weeks,
+CASE WHEN healthcare_benefits = 1 AND paid_time_off_days >= 20 AND maternity_leave_weeks >= 12 
+THEN 'Highly Employee Friendly'
+WHEN healthcare_benefits = 1 AND paid_time_off_days >= 15 
+THEN 'Moderately Employee Friendly'
+ELSE 'Needs Improvement'
+END AS employee_friendly_rating
+FROM fortune_companies;
