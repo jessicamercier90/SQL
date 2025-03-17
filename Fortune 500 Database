@@ -90,3 +90,12 @@ select avg(revenue) as average_revenue, industry
 from fortune_companies
 group by industry
 order by average_revenue, industry desc;
+
+--Classify companies based on their revenue.
+SELECT company_name, revenue,
+CASE WHEN revenue > 400 THEN 'Very High Revenue'
+WHEN revenue BETWEEN 250 AND 400 THEN 'High Revenue'
+WHEN revenue BETWEEN 100 AND 250 THEN 'Medium Revenue'
+ELSE 'Low Revenue'
+END AS revenue_category
+FROM fortune_companies;
