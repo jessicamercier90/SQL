@@ -121,7 +121,7 @@ INSERT INTO hotels VALUES
  , (3, 'Four Season''s', '900 Winter Road, Cityville, PA')
  ;
 
---6 different queries using LEFT JOIN, INNER JOIN, Multiple JOINs in one query, query with a sub query, SELF JOIN, a custom query.
+##For this project, I used SQL to query the Climate Conference Analysis database using LEFT JOIN, INNER JOIN, Multiple JOINs in one query, query with a sub query, SELF JOIN, a custom query.
 
 select * from vips
 limit 5;
