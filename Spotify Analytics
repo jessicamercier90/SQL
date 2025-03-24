@@ -1,0 +1,60 @@
+# For this project, I downloaded Spotify data from Kaggle.
+# Then I created a table to insert Spotify data into.
+# Finally, I performed analytics on the data using SQL. 
+
+#Creating the table: 
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness text NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL 
+)
+
+#Then I inserted the Spotify Data .csv into the table.
+
+#Next, I explored the data using the following SQL. 
+
+#First I determined which artist had the highest average energy across their songs.
+Select artist_name, avg(energy) as avg_energy, track_name
+from BIT_DB.Spotifydata
+group by artist_name
+order by avg_energy desc
+limit 1;
+
+#Then I found which track is the most danceable among songs with a popularity over 90.
+Select track_name, artist_name, danceability, popularity
+from BIT_DB.Spotifydata
+where popularity > 90
+order by danceability desc
+limit 1;
+
+#Next, I discovered the average speechiness and instrumentalness per artist.
+select artist_name, round(avg(speechiness),3) as avg_speechiness, round(avg(instrumentalness),5) as avg_instrumentalness
+from BIT_DB.Spotifydata
+group by artist_name
+order by avg_speechiness desc;
+
+ #I then wanted to know which song has the highest acousticness but still ranks in the top 3 by popularity.
+select track_name, acousticness, popularity
+from BIT_DB.Spotifydata
+order by popularity desc, acousticness desc
+limit 3;
+
+#And finally my curiosity was satiated by fingind the average tempo and track duration for all songs with a valence (positivity) > 0.7.
+select round(avg(tempo),2) as avg_tempo, round(avg(duration_ms)/1000,2) as Avg_duration_sec, valence
+from BIT_DB.Spotifydata
+where valence >0.7;
