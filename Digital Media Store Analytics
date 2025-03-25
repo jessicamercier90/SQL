@@ -1,3 +1,53 @@
-git add chinook.sqlite  # or chinook_dump.sql
-git commit -m "Add Chinook DB"
-git push
+SELECT 'albums' AS table_name, * FROM albums LIMIT 5;
+SELECT 'artists' AS table_name, * FROM artists LIMIT 5;
+SELECT 'customers' AS table_name, * FROM customers LIMIT 5;
+SELECT 'employees' AS table_name, * FROM employees LIMIT 5;
+SELECT 'genres' AS table_name, * FROM genres LIMIT 5;
+SELECT 'invoice_items' AS table_name, * FROM invoice_items LIMIT 5;
+SELECT 'invoices' AS table_name, * FROM invoices LIMIT 5;
+SELECT 'media_types' AS table_name, * FROM media_types LIMIT 5;
+SELECT 'playlist_track' AS table_name, * FROM playlist_track LIMIT 5;
+SELECT 'playlists' AS table_name, * FROM playlists LIMIT 5;
+SELECT 'tracks' AS table_name, * FROM tracks LIMIT 5;
+
+#In this database I query the date for a Digital Media store.
+
+--Which are the 5 most expensive tracks in the database, and what genre does each belong to?
+SELECT 
+    t.Name AS track_name,
+    g.Name AS genre_name,
+    t.UnitPrice
+FROM tracks t
+JOIN genres g ON t.GenreId = g.GenreId
+ORDER BY t.UnitPrice DESC
+LIMIT 5;
+
+--What is the total revenue each customer has generated, and who are the top 10 highest-paying customers?
+SELECT 
+    c.CustomerId,
+    c.FirstName || ' ' || c.LastName AS customer_name,
+    ROUND(SUM(ii.UnitPrice * ii.Quantity), 2) AS total_spent
+FROM customers c
+JOIN invoices i ON c.CustomerId = i.CustomerId
+JOIN invoice_items ii ON i.InvoiceId = ii.InvoiceId
+GROUP BY c.CustomerId
+ORDER BY total_spent DESC
+LIMIT 10;
+
+--Which artist has the most tracks in the database, and how many tracks do they have?
+SELECT 
+    ar.Name AS artist_name,
+    COUNT(t.TrackId) AS total_tracks
+FROM artists ar
+JOIN albums al ON ar.ArtistId = al.ArtistId
+JOIN tracks t ON al.AlbumId = t.AlbumId
+GROUP BY ar.ArtistId
+ORDER BY total_tracks DESC
+LIMIT 1;
+
+--What are the total sales for 2009?
+SELECT 
+    SUM(ii.UnitPrice * ii.Quantity) AS total_sales_2009
+FROM invoices i
+JOIN invoice_items ii ON i.InvoiceId = ii.InvoiceId
+WHERE strftime('%Y', i.InvoiceDate) = '2009';
