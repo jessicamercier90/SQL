@@ -1,3 +1,3 @@
-git add chinook.db
-git commit -m "Add Chinook SQLite database"
+git add chinook.sqlite  # or chinook_dump.sql
+git commit -m "Add Chinook DB"
 git push
