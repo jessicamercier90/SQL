@@ -1,0 +1,45 @@
+##For this project, I used SQL to query the World Health database to get information about general statistics around disease and demographic
+# Dataset Source: https://www.kaggle.com/datasets/malaiarasugraj/global-health-statistics/data
+
+--What are the top 5 Diseases with the Highest Average Mortality Rate (by Disease Category). 
+--This query helps identify which diseases, grouped by category, tend to have the highest average death rates, revealing high-priority health risks globally.
+SELECT 
+    "Disease Category",
+    "Disease Name",
+    ROUND(AVG("Mortality Rate (%)"), 2) AS avg_mortality
+FROM csv
+GROUP BY "Disease Category", "Disease Name"
+ORDER BY avg_mortality DESC
+LIMIT 5;
+
+--Compare Recovery Rates Based on Availability of Vaccines/Treatment. 
+--This query compares the impact of having treatment available on recovery rates.
+SELECT 
+    "Availability of Vaccines/Treatment",
+    ROUND(AVG("Recovery Rate (%)"), 2) AS avg_recovery
+FROM csv
+GROUP BY "Availability of Vaccines/Treatment";
+
+--Countries with the Greatest Improvement in Health Outcomes Over 5 Years.
+--This query reveals which countries have shown the greatest improvement in health outcomes, based on a custom metric already in the dataset.
+SELECT 
+    Country,
+    ROUND(AVG("Improvement in 5 Years (%)"), 2) AS avg_improvement
+FROM csv
+GROUP BY Country
+ORDER BY avg_improvement DESC
+LIMIT 10;
+
+--Correlation Between Income, Education, and Recovery Rate.
+--This gives insight into whether countries with higher income and education also see better recovery rates — a potential indication of access to healthcare and health literacy
+SELECT 
+    Country,
+    "Per Capita Income (USD)",
+    "Education Index",
+    ROUND(AVG("Recovery Rate (%)"), 2) AS avg_recovery
+FROM csv
+GROUP BY Country
+ORDER BY avg_recovery DESC;
+
+--Identify Diseases With Above-Average Mortality but Below-Average Recovery Rates.
+--This query helps you pinpoint diseases that are particularly dangerous — those with mortality rates higher than average but recovery rates lower than average.
