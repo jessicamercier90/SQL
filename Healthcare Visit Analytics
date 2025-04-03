@@ -1,0 +1,41 @@
+##For this project, I used SQL to query the Health Care database to get information about patient visits and costs.
+# Dataset Source: https://www.kaggle.com/datasets/prasad22/healthcare-dataset
+
+--What is the average billing amount per insurance provider, and which one is most expensive on average?
+--To identify which insurance providers are associated with higher average costs.
+SELECT 
+    "Insurance Provider", 
+    ROUND(AVG("Billing Amount"), 2) AS avg_billing
+FROM HealthCare
+GROUP BY "Insurance Provider"
+ORDER BY avg_billing DESC;
+
+--Which hospitals admitted the highest number of emergency patients?
+--This pinpoints which hospitals deal with the most emergency cases, which could relate to capacity, specialization, or regional need.
+SELECT 
+    Hospital, 
+    COUNT(*) AS emergency_admissions
+FROM HealthCare
+WHERE "Admission Type" = 'Emergency'
+GROUP BY Hospital
+ORDER BY emergency_admissions DESC
+LIMIT 5;
+
+--Which medical conditions are most commonly associated with abnormal or inconclusive test results?
+--Helps identify high-risk conditions that more often lead to non-normal test results.
+SELECT 
+    "Medical Condition", 
+    COUNT(*) AS flagged_cases
+FROM HealthCare
+WHERE "Test Results" IN ('Abnormal', 'Inconclusive')
+GROUP BY "Medical Condition"
+ORDER BY flagged_cases DESC;
+
+--What's the average length of hospital stay by admission type?
+--Analyzes how long patients stay based on how they were admitted (Emergency vs. Elective vs. Urgent).
+SELECT 
+    "Admission Type",
+    ROUND(AVG(JULIANDAY("Discharge Date") - JULIANDAY("Date of Admission")), 1) AS avg_stay_days
+FROM HealthCare
+GROUP BY "Admission Type"
+ORDER BY avg_stay_days DESC;
