@@ -1,0 +1,57 @@
+##For this project, I used SQL to query the Global Remote Work Wellbeing database to get a mix of behavioral, health, and work performance metrics per employee.
+# Dataset Source: https://www.kaggle.com/datasets/adilshamim8/global-remote-work-and-wellbeing-dataset
+
+--Is there a link between overwork and low work-life balance?
+--Helps explore whether longer working hours are associated with lower work-life balance satisfaction.
+WITH work_stats AS (
+    SELECT 
+        ROUND(AVG("Daily_Working_Hours"), 2) AS avg_hours,
+        ROUND(AVG("Work_Life_Balance_Satisfaction"), 2) AS avg_wlb
+    FROM GRWW
+)
+SELECT 
+    avg_hours,
+    avg_wlb,
+    CASE 
+        WHEN avg_hours > 9 THEN 'Overworking'
+        ELSE 'Balanced Hours'
+    END AS work_pattern
+FROM work_stats;
+
+--Who are the top 5 most stressed employees with the lowest sleep duration?
+--Identifies at-risk employees who are sleeping poorly and showing high stress levels. Useful for mental health initiatives or targeted support.
+SELECT 
+    Employee_ID,
+    Stress_Level,
+    Sleep_Duration
+FROM GRWW
+ORDER BY "Stress_Level" DESC, "Sleep_Duration" ASC
+LIMIT 5;
+
+--Do more meetings reduce productivity? Grouped by meeting count.
+--Helps uncover if a high number of meetings correlates with lower productivity, which can help inform smarter meeting policies.
+SELECT 
+    Meetings_Attended,
+    ROUND(AVG(Productivity_Score), 2) AS avg_productivity
+FROM GRWW
+GROUP BY Meetings_Attended
+ORDER BY Meetings_Attended;
+
+--What is the average stress level by activity tier (low, medium, high)
+--Examines how physical activity relates to stress and sleep, encouraging healthy lifestyle initiatives for remote employees.
+WITH activity_levels AS (
+    SELECT *,
+        CASE
+            WHEN Physical_Activity_Steps >= 10000 THEN 'High Activity'
+            WHEN Physical_Activity_Steps BETWEEN 5000 AND 9999 THEN 'Moderate Activity'
+            ELSE 'Low Activity'
+        END AS activity_group
+    FROM GRWW
+)
+SELECT 
+    activity_group,
+    ROUND(AVG(Stress_Level), 2) AS avg_stress,
+    ROUND(AVG(Sleep_Duration), 2) AS avg_sleep
+FROM activity_levels
+GROUP BY activity_group
+ORDER BY avg_stress DESC;
